@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f3f5f2">
   <title>2025 Tax Workpaper</title>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="src/style.css">
 </head>
 <body>
@@ -14,9 +15,9 @@
     <main id="main">
       <p id="startup-status" role="status" aria-live="polite">Loading the workpaper…</p>
     </main>
-    <aside id="drawer" aria-label="Trace details"></aside>
+    <aside id="drawer" class="drawer" aria-label="Trace details"></aside>
   </div>
-  <div id="toast" role="status" aria-live="polite" hidden></div>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
   <script type="module">
     const status = document.getElementById('startup-status');
     const scripts = [
