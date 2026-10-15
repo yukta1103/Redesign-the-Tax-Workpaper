@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f5f2">
+  <title>2025 Tax Workpaper</title>
+  <link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="top" aria-label="Workpaper controls"></header>
+    <nav class="rail" aria-label="Workpaper navigation"></nav>
+    <main id="main">
+      <p id="startup-status" role="status" aria-live="polite">Loading the workpaper…</p>
+    </main>
+    <aside id="drawer" aria-label="Trace details"></aside>
+  </div>
+  <div id="toast" role="status" aria-live="polite" hidden></div>
+  <script type="module">
+    const status = document.getElementById('startup-status');
+    const scripts = [
+      'src/core.js',
+      'src/ui-shared.js',
+      'src/ui-gate-views.js',
+      'src/ui-records.js',
+      'src/ui-filing-app.js'
+    ];
+
+    async function loadScript(src) {
+      await new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = resolve;
+        script.onerror = () => reject(new Error(`Failed to load ${src}`));
+        document.body.appendChild(script);
+      });
+    }
+
+    async function startApp() {
+      const response = await fetch('data/packet.json');
+      if (!response.ok) {
+        throw new Error(`Failed to load data/packet.json (${response.status})`);
+      }
+      window.PACKET = await response.json();
+
+      for (const src of scripts) {
+        await loadScript(src);
+      }
+
+      status?.remove();
+    }
+
+    startApp().catch(error => {
+      console.error('Workpaper startup failed:', error);
+      if (status) {
+        status.setAttribute('role', 'alert');
+        status.textContent = `Unable to start the workpaper: ${error.message}`;
+      }
+    });
+  </script>
+</body>
+</html>
