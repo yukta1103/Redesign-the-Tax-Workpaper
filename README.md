@@ -2,7 +2,6 @@
 
 A web-native tax workpaper for one complex household (Okafor-Lindqvist, 2025, MFJ, California to Texas mid-year), built from the purpose rather than from the spreadsheet.
 
-- **Live app:** https://yukta1103.github.io/Redesign-the-Tax-Workpaper/
 - **Video walkthrough:** VIDEO-LINK
 - **Core idea and data model (one page):** [docs/1-core-idea-and-data-model.md](docs/1-core-idea-and-data-model.md)
 - **Errors found and how the design surfaced them:** [docs/2-errors-found.md](docs/2-errors-found.md)
@@ -37,12 +36,15 @@ Every number on the return is a claim. A claim is proven when it has a source (a
 
 ## Run locally
 
-Any static server works. Browsers block `fetch` on `file://`, so do not open `index.html` directly.
+Open the project folder in VS Code and choose **Terminal > New Terminal**. From the folder containing `index.html`, run:
 
-```
+```powershell
 python -m http.server 8000
-# open http://localhost:8000
 ```
+
+If `python` isn't recognized, run `py -m http.server 8000` instead. Open **http://localhost:8000/** in your browser and leave the terminal running. You can also use the VS Code **Live Server** extension.
+
+Don't double-click `index.html`: browsers block its data fetch when opened from `file://`.
 
 ## Architecture
 
@@ -59,16 +61,15 @@ src/style.css
 
 - **Evidence is immutable; everything the firm does is an event.** The workpaper is a fold over an append-only ledger. Undo, reversal, freeze and amendment are all events, never deletions.
 - **Source documents sit behind an adapter** (`pages(docId)`, `locate(valueId)`), so real page images can replace the simulated pages without changing tracing.
-- **Storage:** browser storage with live sync across tabs (BroadcastChannel). The store is one small object (`Store` in `core.js`); swapping in a shared backend means replacing `append` and `connect`.
 - **No framework, no build step.** Vanilla JS so the app loads the packet as delivered from a static link.
 
 ## Known limits
 
 - The engine cannot be rerun, so tax effects use each version's per-dollar rates (or the engine's own what-if when one exists). Downstream totals are estimates until the engine recomputes; the UI says so and flags threshold crossings.
-- On static hosting, saving is per browser. Multi-person collaboration works across tabs on one machine, not across people.
+- Saving uses browser storage, so work persists across reloads and syncs live across tabs on the same machine, but it is not shared between people or devices. The store is a single object (`Store` in `src/core.js`); swapping in a shared backend means replacing its `append` and `connect` methods.
 - Not tuned for mobile.
 - Reset demo data: act as Jo Kimura (firm administrator), open Standards, access, time, and clear the device ledger.
 
 ## How AI was used
 
-Claude (Anthropic) was used throughout: exploring the packet with Python, hunting errors by comparing extracted values to printed page content and recomputing engine results, writing the app, and testing it headlessly with Playwright through a full season (findings, partner approval, sign-offs, client signature, e-file, freeze, 2028 notice). Every finding was checked against the source pages by script before it went into the app.
+I used Claude (Anthropic) as my main tool throughout. I directed the design (the workpaper-as-proof idea, the ledger model, which checks to build, and how reviewers should move through the app) and reviewed the output. Claude explored the packet with Python scripts, compared every extracted value against the printed page content, recomputed engine results to find the errors in [docs/2-errors-found.md](docs/2-errors-found.md), wrote most of the application code, and tested it headlessly with Playwright through a full season (findings, partner approval, sign-offs, client signature, e-file, freeze, and the 2028 notice). I verified the findings against the source documents before including them. I used Claude Code to fix bugs, format the code, and finalize the repo.
