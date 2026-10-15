@@ -2,7 +2,9 @@
 
 Tax effects are on the balance due (positive means more owed), estimated at engine v3's per-dollar rates unless noted. Totals with every finding accepted: federal moves from **4,220 owed to about a 4,264 refund**; California refund moves from **8,256 to about 11,692**. These need an engine recompute before filing.
 
-## Confident mistakes in the engine output or extraction
+## Eighteen errors in the engine output or extraction
+
+The app's Errors filter counts findings classified as errors. Its count follows the season clock: the California wage error appears after the supporting pay stub (D73) arrives on March 27. The separate provider-name discrepancy below is informational because it has no tax effect.
 
 | # | Error | Evidence | How it surfaced | Federal | California |
 |---|---|---|---|---|---|
@@ -24,7 +26,7 @@ Tax effects are on the balance due (positive means more owed), estimated at engi
 | 16 | Theo's SSN on the organizer is wrong (3309 vs 3390) | 2024 accepted return; D71 card | Identity numbers compared to prior-year filings before filing. In the packet this caused the e-file rejection; the prototype blocks e-file until it is fixed | 0 | 0 |
 | 17 | Little Sprouts tax ID misread at 0.97 confidence (74-3829516 vs printed 74-3829156) | D62 page | Identifying numbers re-read against the printed page | 0 | 0 |
 | 18 | Meridian page 32 never read: sale M18 missing (proceeds 250, loss 60) | D31 p32 | Broker summary tied to sum of lots; explains the 250 gap exactly | -21 | small |
-| 19 | Form 2441 provider named "Bright Oak Preschool" | D61 is Bright Oak Kids Club | Provider names agreed to statements | 0 | 0 |
+| Info | Form 2441 provider name differs from the statement: "Bright Oak Preschool" vs. "Bright Oak Kids Club" | D61 is Bright Oak Kids Club | Provider names agreed to statements | 0 | 0 |
 
 ## Judgment calls surfaced (recorded with authority before filing)
 

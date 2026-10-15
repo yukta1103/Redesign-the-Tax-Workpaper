@@ -23,7 +23,7 @@ Every number on the return is a claim. A claim is proven when it has a source (a
 | Show how a number was built; reconcile figures | Computation tree in the trace; Sales detail (broker reconciliation); Books to tax |
 | Hundreds of sales without swamping review | Sales detail: totals tie per broker, filter to flagged lots |
 | Books to taxable income; state split | Books to tax; State split (Schedule CA columns A to E) |
-| Checks that don't trust the engine | Findings: 19 errors, 5 judgment calls, 12 agreeing recomputations |
+| Checks that don't trust the engine | Documented findings: 18 errors, 1 information item, 5 judgment calls, 12 agreeing recomputations |
 | Change without losing the original (who, why, tax effect) | Adjustments keep the engine value, reason, authority and federal / California effect |
 | Live changes, "since I last looked", compare versions, what-ifs, bulk with undo | Changes & versions; What-ifs (engine alternatives plus sandbox); bulk accept with undo |
 | Variance vs last year, judgments, elections, due diligence, completeness | Variance vs 2024; Judgments & elections; Document index; Filing gate |
