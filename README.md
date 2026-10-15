@@ -1,75 +1,51 @@
 # Redesign the Tax Workpaper
 
-A web-native tax workpaper for one complex household (Okafor-Lindqvist, 2025, MFJ, California to Texas mid-year), built from the purpose rather than from the spreadsheet.
+A browser-based tax workpaper prototype for the fictional Okafor-Lindqvist household's 2025 return.
 
-- **Video walkthrough:** VIDEO-LINK
-- **Core idea and data model (one page):** [docs/1-core-idea-and-data-model.md](docs/1-core-idea-and-data-model.md)
-- **Errors found and how the design surfaced them:** [docs/2-errors-found.md](docs/2-errors-found.md)
+## Try it
 
-![Overview](docs/screenshots/overview.png)
-
-## The idea in one paragraph
-
-Every number on the return is a claim. A claim is proven when it has a source (a field on a page), a derivation (the engine rule and its inputs) and a verification (a tick mark: who checked it, how, against what). The workpaper shows which claims are proven, which are not, and what blocks filing. Click any number to see how it was built; click again to see the page it came from with the field highlighted.
-
-![Trace to source](docs/screenshots/trace-to-source.png)
-
-## What it does
-
-| Requirement | Where in the app |
-|---|---|
-| Trace any number to its source field; any document to everywhere it landed | Click any number; Document index |
-| Record how each number was verified | Tick marks on every number; verification form in the trace drawer |
-| Show how a number was built; reconcile figures | Computation tree in the trace; Sales detail (broker reconciliation); Books to tax |
-| Hundreds of sales without swamping review | Sales detail: totals tie per broker, filter to flagged lots |
-| Books to taxable income; state split | Books to tax; State split (Schedule CA columns A to E) |
-| Checks that don't trust the engine | Documented findings: 18 errors, 1 information item, 5 judgment calls, 12 agreeing recomputations |
-| Change without losing the original (who, why, tax effect) | Adjustments keep the engine value, reason, authority and federal / California effect |
-| Live changes, "since I last looked", compare versions, what-ifs, bulk with undo | Changes & versions; What-ifs (engine alternatives plus sandbox); bulk accept with undo |
-| Variance vs last year, judgments, elections, due diligence, completeness | Variance vs 2024; Judgments & elections; Document index; Filing gate |
-| Questions that become evidence; review notes that block filing; sign-offs that reopen | Questions & messages; Review & sign-off (sign-offs hash what they cover) |
-| Enforced roles, several people, assignments, client approval and e-file signature | Role switcher (8 users); area assignments; client portal with 8879 PINs |
-| Extension, e-file rejection, freeze, amend, notice response, roll forward | Filing, e-file, freeze; Notice response (Letter 566 package); Next year |
-| Firm standards, masked sensitive data with view logs, time vs budget, search | Standards, access, time; global search |
-
-![Findings](docs/screenshots/findings.png)
+**Live demo:** [miraflroesai.vercel.app](https://miraflroesai.vercel.app/)
 
 ## Run locally
 
-Open the project folder in VS Code and choose **Terminal > New Terminal**. From the folder containing `index.html`, run:
+1. Download or clone this repository.
+2. Open a terminal in the project folder.
+3. Start a local web server:
 
-```powershell
-python -m http.server 8000
-```
+   ```bash
+   python -m http.server 8000
+   ```
 
-If `python` isn't recognized, run `py -m http.server 8000` instead. Open **http://localhost:8000/** in your browser and leave the terminal running. You can also use the VS Code **Live Server** extension.
+   On Windows, use `py -m http.server 8000` if `python` is not recognized.
 
-Don't double-click `index.html`: browsers block its data fetch when opened from `file://`.
+4. Open [http://localhost:8000](http://localhost:8000).
 
-## Architecture
+Keep the terminal open while using the app. Do not open `index.html` directly; the app needs the local server to load its data.
 
-```
-index.html            loads data/packet.json (unmodified), then the scripts in order
-data/packet.json      the packet exactly as delivered
-src/core.js           indices over the packet, append-only event ledger, derived state, independent checks, tax-effect math
-src/ui-shared.js      UI state, season clock, tick marks, masking, source-document adapter, trace drawer
-src/ui-gate-views.js  filing gate, sign-off hashing, overview, findings, areas, return summary
-src/ui-records.js     documents, sales, depreciation, books to tax, rentals, state split, K-1s, carryovers, variance, prior preparer, people, review, changes, what-ifs
-src/ui-filing-app.js  filing and e-file, notice response, next year, firm, client portal, render loop and event handlers
-src/style.css
-```
+## The idea
 
-- **Evidence is immutable; everything the firm does is an event.** The workpaper is a fold over an append-only ledger. Undo, reversal, freeze and amendment are all events, never deletions.
-- **Source documents sit behind an adapter** (`pages(docId)`, `locate(valueId)`), so real page images can replace the simulated pages without changing tracing.
-- **No framework, no build step.** Vanilla JS so the app loads the packet as delivered from a static link.
+A workpaper is a proof, not a spreadsheet. Every number should have a source, a derivation, and a verification. Click a return line to trace it through its inputs to the source field, and see where the value landed.
 
-## Known limits
+![Workpaper overview](docs/screenshots/overview.png)
 
-- The engine cannot be rerun, so tax effects use each version's per-dollar rates (or the engine's own what-if when one exists). Downstream totals are estimates until the engine recomputes; the UI says so and flags threshold crossings.
-- Saving uses browser storage, so work persists across reloads and syncs live across tabs on the same machine, but it is not shared between people or devices. The store is a single object (`Store` in `src/core.js`); swapping in a shared backend means replacing its `append` and `connect` methods.
-- Not tuned for mobile.
-- Reset demo data: act as Jo Kimura (firm administrator), open Standards, access, time, and clear the device ledger.
+## What you can explore
 
-## How AI was used
+- Trace return numbers to source documents and their highlighted fields.
+- Review independent checks, findings, adjustments, and undo.
+- Reconcile broker sales, books-to-tax, and California part-year income.
+- Explore review sign-offs, role-based access, client approval, e-file, and notice response.
 
-I used Claude (Anthropic) as my main tool throughout. I directed the design (the workpaper-as-proof idea, the ledger model, which checks to build, and how reviewers should move through the app) and reviewed the output. Claude explored the packet with Python scripts, compared every extracted value against the printed page content, recomputed engine results to find the errors in [docs/2-errors-found.md](docs/2-errors-found.md), wrote most of the application code, and tested it headlessly with Playwright through a full season (findings, partner approval, sign-offs, client signature, e-file, freeze, and the 2028 notice). I verified the findings against the source documents before including them. I used Claude Code to fix bugs, format the code, and finalize the repo.
+The packet data is fictional. Changes are saved in browser storage on your device and sync between tabs on that device; they are not shared with other people.
+
+To reset the demo, act as **Jo Kimura (firm administrator)**, open **Standards, access, time**, and choose **Clear this device’s workpaper ledger**.
+
+## Notes
+
+- This is a prototype with no install or build step.
+- The tax engine cannot be rerun. Tax effects use its marginal rates, so adjusted downstream totals are estimates.
+- Source pages are simulated. The trace is designed so a real page-image renderer can replace them later.
+- More detail: [core idea and data model](docs/1-core-idea-and-data-model.md) and [errors found](docs/2-errors-found.md).
+
+## How I used AI
+
+I used Claude (Anthropic) as my main tool throughout. I directed the design and reviewed the output. Claude explored the packet, compared extracted values against printed pages, recomputed engine results, wrote most of the app, and tested it headlessly with Playwright through a full season. I verified the findings against the source documents before including them. I used Claude Code to fix bugs, format the code, and finalize the repo.
